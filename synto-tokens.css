@@ -1,0 +1,174 @@
+/*
+ * Synto Design System — CSS Custom Properties
+ * Generated from: tokens.json (2026-04-09)
+ *
+ * 使い方: <link rel="stylesheet" href="synto-tokens.css">
+ * または: @import url('synto-tokens.css');
+ */
+
+/* ==========================================================================
+   1. Primitives — 生の値（直接使わない。Semanticを通して使う）
+   ========================================================================== */
+
+:root {
+  /* --- Color: Teal --- */
+  --p-teal-50:  #E4F5F3;
+  --p-teal-100: #BBE3DE;
+  --p-teal-200: #80CCC3;
+  --p-teal-300: #4DB5AA;
+  --p-teal-500: #2E8F86;  /* Brand Primary */
+  --p-teal-600: #226B64;
+  --p-teal-700: #185049;
+  --p-teal-800: #103632;
+  --p-teal-900: #081F1D;
+
+  /* --- Color: Neutral --- */
+  --p-neutral-0:   #FFFFFF;
+  --p-neutral-50:  #F6F4F1;  /* Warm Gray — default bg */
+  --p-neutral-100: #F0EEEB;
+  --p-neutral-200: #E3DDD8;
+  --p-neutral-400: #888888;
+  --p-neutral-600: #4D4D4D;
+  --p-neutral-900: #1A1C1D;
+  --p-neutral-950: #232526;
+
+  /* --- Font Family --- */
+  --p-font-sans:  'Noto Sans JP', sans-serif;
+  --p-font-serif: 'Shippori Mincho', serif;
+
+  /* --- Font Size --- */
+  --p-text-sm:   14px;
+  --p-text-base: 16px;
+  --p-text-lg:   18px;
+  --p-text-xl:   22px;
+  --p-text-2xl:  28px;
+  --p-text-3xl:  32px;
+  --p-text-4xl:  40px;
+
+  /* --- Font Weight --- */
+  --p-weight-regular: 400;
+  --p-weight-medium:  500;
+  --p-weight-bold:    700;
+  --p-weight-black:   900;
+
+  /* --- Line Height --- */
+  --p-leading-tight:   1.3;
+  --p-leading-snug:    1.4;
+  --p-leading-normal:  1.5;
+  --p-leading-relaxed: 1.6;
+  --p-leading-loose:   1.7;
+
+  /* --- Letter Spacing --- */
+  --p-tracking-tight:  0em;
+  --p-tracking-normal: 0.02em;
+  --p-tracking-wide:   0.08em;
+  --p-tracking-wider:  0.12em;
+
+  /* --- Spacing --- */
+  --p-space-1:  4px;
+  --p-space-2:  8px;
+  --p-space-3:  12px;
+  --p-space-4:  16px;
+  --p-space-5:  20px;
+  --p-space-6:  24px;
+  --p-space-8:  32px;
+  --p-space-10: 40px;
+  --p-space-12: 48px;
+  --p-space-14: 56px;
+  --p-space-16: 64px;
+  --p-space-18: 72px;
+  --p-space-22: 88px;
+
+  /* --- Border Radius --- */
+  --p-radius-sm:   6px;
+  --p-radius-md:   10px;
+  --p-radius-lg:   12px;
+  --p-radius-full: 9999px;
+
+  /* --- Box Shadow --- */
+  --p-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --p-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+
+  /* ==========================================================================
+     2. Semantic — 用途別（HTML/CSSではこちらを使う）
+     ========================================================================== */
+
+  /* --- Background (5) --- */
+  --bg-default:        var(--p-neutral-50);
+  --bg-surface:        var(--p-neutral-0);
+  --bg-dark:           var(--p-neutral-900);
+  --bg-accent:         var(--p-teal-50);
+  --bg-accent-strong:  var(--p-teal-500);
+
+  /* --- Text (6) --- */
+  --text-primary:    var(--p-neutral-900);
+  --text-secondary:  var(--p-neutral-600);
+  --text-muted:      var(--p-neutral-400);
+  --text-on-dark:    var(--p-neutral-50);
+  --text-on-accent:  var(--p-neutral-0);
+  --text-accent:     var(--p-teal-500);
+
+  /* --- Border (2) --- */
+  --border-default: var(--p-neutral-200);
+  --border-accent:  var(--p-teal-500);
+
+  /* --- Icon (3) --- */
+  --icon-default: var(--p-neutral-600);
+  --icon-accent:  var(--p-teal-500);
+  --icon-muted:   var(--p-neutral-400);
+
+  /* --- Radius (2) --- */
+  --radius-sm: var(--p-radius-sm);
+  --radius-lg: var(--p-radius-lg);
+
+  /* --- Shadow (2) --- */
+  --shadow-sm: var(--p-shadow-sm);
+  --shadow-md: var(--p-shadow-md);
+
+
+  /* ==========================================================================
+     3. Typography Composites — フォント設定のショートカット
+     ========================================================================== */
+
+  /* 明朝系（見出し・Display） */
+  --font-serif-display: var(--p-weight-bold)    var(--p-text-4xl)/var(--p-leading-tight)   var(--p-font-serif);
+  --font-serif-h1:      var(--p-weight-bold)    var(--p-text-3xl)/var(--p-leading-tight)   var(--p-font-serif);
+  --font-serif-h2:      var(--p-weight-medium)  var(--p-text-2xl)/var(--p-leading-snug)    var(--p-font-serif);
+  --font-serif-h3:      var(--p-weight-medium)  var(--p-text-xl)/var(--p-leading-snug)     var(--p-font-serif);
+  --font-serif-h4:      var(--p-weight-medium)  var(--p-text-lg)/var(--p-leading-normal)   var(--p-font-serif);
+
+  /* ゴシック系（見出しバリエーション） */
+  --font-sans-display:  var(--p-weight-medium)  var(--p-text-4xl)/var(--p-leading-tight)   var(--p-font-sans);
+  --font-sans-h1:       var(--p-weight-medium)  var(--p-text-3xl)/var(--p-leading-tight)   var(--p-font-sans);
+  --font-sans-h2:       var(--p-weight-medium)  var(--p-text-2xl)/var(--p-leading-snug)    var(--p-font-sans);
+  --font-sans-h3:       var(--p-weight-medium)  var(--p-text-xl)/var(--p-leading-snug)     var(--p-font-sans);
+  --font-sans-h4:       var(--p-weight-medium)  var(--p-text-lg)/var(--p-leading-normal)   var(--p-font-sans);
+
+  /* 本文・UI */
+  --font-body:          var(--p-weight-regular) var(--p-text-base)/var(--p-leading-loose)   var(--p-font-sans);
+  --font-body-sm:       var(--p-weight-regular) var(--p-text-sm)/var(--p-leading-relaxed)   var(--p-font-sans);
+  --font-caption:       var(--p-weight-regular) var(--p-text-sm)/var(--p-leading-normal)    var(--p-font-sans);
+  --font-label:         var(--p-weight-medium)  var(--p-text-sm)/var(--p-leading-normal)    var(--p-font-sans);
+
+
+  /* ==========================================================================
+     4. deck.html 互換レイヤー（既存HTMLからの移行用）
+     ========================================================================== */
+
+  --bg:       var(--bg-default);
+  --dark:     var(--bg-dark);
+  --text:     var(--text-primary);
+  --sub:      var(--text-secondary);
+  --muted:    var(--text-muted);
+  --accent:   var(--p-teal-500);
+  --accent-l: var(--bg-accent);
+  --accent-d: var(--p-teal-600);
+  --border:   var(--border-default);
+  --white:    var(--p-neutral-0);
+  --card-bg:  rgba(255, 255, 255, 0.85);
+  --r-sm:     var(--radius-sm);
+  --r-md:     var(--p-radius-md);
+  --r-lg:     var(--radius-lg);
+  --shadow:   var(--shadow-sm);
+}

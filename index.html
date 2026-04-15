@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>amatowa 見積書</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="synto-tokens.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font: var(--font-body);
+    color: var(--text-primary);
+    background: var(--bg-default);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 48px 32px 120px; }
+
+  /* --- Header --- */
+  .doc-header { border-bottom: 1px solid var(--border-default); padding-bottom: 32px; margin-bottom: 48px; }
+  .doc-meta { font: var(--font-caption); color: var(--text-muted); letter-spacing: var(--p-tracking-wide); text-transform: uppercase; margin-bottom: 12px; }
+  .doc-title { font: var(--font-serif-display); color: var(--text-primary); margin-bottom: 16px; letter-spacing: var(--p-tracking-tight); }
+  .doc-subtitle { font: var(--font-body); color: var(--text-secondary); margin-bottom: 24px; }
+  .doc-badges { display: flex; gap: 12px; flex-wrap: wrap; }
+  .badge { padding: 6px 14px; border-radius: var(--radius-sm); font: var(--font-label); background: var(--bg-surface); border: 1px solid var(--border-default); color: var(--text-secondary); }
+  .badge.accent { background: var(--bg-accent); border-color: var(--border-accent); color: var(--text-accent); }
+
+  /* --- Section --- */
+  section { margin-bottom: 72px; }
+  .sec-num { font: var(--font-caption); color: var(--text-accent); letter-spacing: var(--p-tracking-wider); font-weight: var(--p-weight-bold); margin-bottom: 8px; }
+  .sec-title { font: var(--font-serif-h1); color: var(--text-primary); margin-bottom: 8px; }
+  .sec-lead { font: var(--font-body); color: var(--text-secondary); margin-bottom: 32px; max-width: 720px; }
+
+  /* --- Summary Cards --- */
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+  .summary-card { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 32px; position: relative; transition: transform .2s, box-shadow .2s; }
+  .summary-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .summary-card.recommended { border: 2px solid var(--border-accent); background: linear-gradient(180deg, var(--bg-accent) 0%, var(--bg-surface) 40%); }
+  .card-label { font: var(--font-caption); color: var(--text-muted); letter-spacing: var(--p-tracking-wide); text-transform: uppercase; margin-bottom: 8px; }
+  .card-platform { font: var(--font-serif-h2); color: var(--text-primary); margin-bottom: 4px; }
+  .card-tagline { font: var(--font-body-sm); color: var(--text-secondary); margin-bottom: 24px; min-height: 2.8em; }
+  .card-price { font: var(--font-serif-display); color: var(--text-primary); line-height: 1.1; }
+  .card-price .unit { font: var(--font-body-sm); color: var(--text-secondary); margin-left: 8px; font-weight: normal; }
+  .card-breakdown { font: var(--font-body-sm); color: var(--text-secondary); margin-top: 12px; }
+  .card-breakdown b { color: var(--text-primary); font-weight: var(--p-weight-medium); }
+  .recommended-mark { position: absolute; top: -12px; right: 24px; background: var(--bg-accent-strong); color: var(--text-on-accent); padding: 6px 14px; border-radius: var(--radius-sm); font: var(--font-label); letter-spacing: var(--p-tracking-wide); }
+
+  /* --- Key Facts Strip --- */
+  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 24px; }
+  .fact { text-align: center; }
+  .fact-label { font: var(--font-caption); color: var(--text-muted); margin-bottom: 4px; }
+  .fact-value { font: var(--font-serif-h3); color: var(--text-primary); }
+
+  /* --- Tables --- */
+  .tbl-wrap { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 14px 16px; text-align: left; font: var(--font-body-sm); border-bottom: 1px solid var(--border-default); }
+  th { background: var(--bg-default); font: var(--font-label); color: var(--text-secondary); letter-spacing: var(--p-tracking-wide); text-transform: uppercase; font-size: 12px; }
+  tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.task { color: var(--text-primary); }
+  td.note { color: var(--text-muted); font-size: 13px; }
+  tr.total-row td { background: var(--bg-accent); font: var(--font-label); color: var(--text-primary); font-size: 14px; }
+  tr.total-row td.num { font-size: 15px; font-weight: var(--p-weight-bold); }
+  .diff-higher { color: #B0452D; font-weight: var(--p-weight-medium); }
+  .diff-lower { color: var(--text-accent); font-weight: var(--p-weight-medium); }
+  .diff-same { color: var(--text-muted); }
+
+  /* --- Process header --- */
+  .proc-head { display: flex; align-items: baseline; gap: 16px; margin: 40px 0 12px; padding-left: 0; }
+  .proc-head .num { font: var(--font-serif-h3); color: var(--text-accent); font-variant-numeric: tabular-nums; }
+  .proc-head .title { font: var(--font-serif-h2); color: var(--text-primary); }
+  .proc-lead { font: var(--font-body-sm); color: var(--text-secondary); margin-bottom: 16px; max-width: 720px; }
+
+  /* --- Callout --- */
+  .callout { background: var(--bg-accent); border-left: 3px solid var(--border-accent); border-radius: var(--radius-sm); padding: 16px 20px; margin: 24px 0; font: var(--font-body-sm); color: var(--text-primary); }
+  .callout b { color: var(--text-accent); }
+
+  /* --- TOC --- */
+  .toc { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 24px 32px; margin-bottom: 48px; }
+  .toc-title { font: var(--font-label); color: var(--text-muted); letter-spacing: var(--p-tracking-wide); text-transform: uppercase; margin-bottom: 12px; }
+  .toc ol { list-style: none; counter-reset: toc; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 32px; }
+  .toc li { counter-increment: toc; font: var(--font-body-sm); }
+  .toc li::before { content: counter(toc, decimal-leading-zero) "  "; color: var(--text-accent); font-weight: var(--p-weight-bold); font-variant-numeric: tabular-nums; }
+  .toc a { color: var(--text-primary); text-decoration: none; border-bottom: 1px solid transparent; }
+  .toc a:hover { border-bottom-color: var(--border-accent); color: var(--text-accent); }
+
+  /* --- Compare matrix --- */
+  .compare-matrix th:nth-child(2), .compare-matrix td:nth-child(2),
+  .compare-matrix th:nth-child(3), .compare-matrix td:nth-child(3) { background: rgba(46, 143, 134, 0.04); }
+  .compare-matrix th:nth-child(4), .compare-matrix td:nth-child(4),
+  .compare-matrix th:nth-child(5), .compare-matrix td:nth-child(5) { background: rgba(180, 180, 180, 0.06); }
+
+  /* --- Responsive --- */
+  @media (max-width: 820px) {
+    .wrap { padding: 32px 20px 80px; }
+    .summary-grid { grid-template-columns: 1fr; }
+    .facts { grid-template-columns: repeat(2, 1fr); }
+    .toc ol { grid-template-columns: 1fr; }
+    .doc-title { font-size: 28px; }
+    th, td { padding: 10px 12px; font-size: 12px; }
+  }
+
+  /* ==== Interactive Configurator ==== */
+  .step { margin-bottom: 64px; }
+  .step-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 24px; }
+  .step-num { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: var(--radius-full); background: var(--bg-accent-strong); color: var(--text-on-accent); font: var(--font-label); font-weight: var(--p-weight-bold); font-size: 16px; }
+  .step-title { font: var(--font-serif-h2); color: var(--text-primary); }
+  .step-lead { font: var(--font-body-sm); color: var(--text-secondary); margin-bottom: 20px; max-width: 720px; }
+
+  /* Option cards (radio/checkbox) */
+  .opt-grid { display: grid; gap: 16px; }
+  .opt-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .opt-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .opt-card { background: var(--bg-surface); border: 2px solid var(--border-default); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer; transition: all .15s ease; position: relative; user-select: none; }
+  .opt-card:hover { border-color: var(--p-teal-300); transform: translateY(-1px); }
+  .opt-card.selected { border-color: var(--border-accent); background: var(--bg-accent); }
+  .opt-card.selected::after { content: "✓"; position: absolute; top: 14px; right: 18px; width: 24px; height: 24px; border-radius: var(--radius-full); background: var(--bg-accent-strong); color: var(--text-on-accent); display: flex; align-items: center; justify-content: center; font-weight: var(--p-weight-bold); font-size: 14px; }
+  .opt-card input { position: absolute; opacity: 0; pointer-events: none; }
+
+  .opt-name { font: var(--font-serif-h4); color: var(--text-primary); margin-bottom: 6px; padding-right: 36px; }
+  .opt-desc { font: var(--font-body-sm); color: var(--text-secondary); margin-bottom: 14px; min-height: 2.8em; }
+  .opt-price { font: var(--font-serif-h3); color: var(--text-primary); font-variant-numeric: tabular-nums; }
+  .opt-price .unit { font: var(--font-body-sm); color: var(--text-secondary); margin-left: 6px; font-weight: normal; }
+  .opt-meta { font: var(--font-caption); color: var(--text-muted); margin-top: 6px; }
+
+  /* Option smaller row cards (for add-ons) */
+  .addon-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .addon { display: flex; align-items: center; gap: 16px; background: var(--bg-surface); border: 2px solid var(--border-default); border-radius: var(--radius-lg); padding: 16px 20px; cursor: pointer; transition: all .15s ease; }
+  .addon:hover { border-color: var(--p-teal-300); }
+  .addon.selected { border-color: var(--border-accent); background: var(--bg-accent); }
+  .addon-check { width: 22px; height: 22px; border-radius: var(--radius-sm); border: 2px solid var(--border-default); flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-surface); font-weight: var(--p-weight-bold); color: transparent; transition: all .15s; }
+  .addon.selected .addon-check { background: var(--bg-accent-strong); border-color: var(--border-accent); color: var(--text-on-accent); }
+  .addon.selected .addon-check::before { content: "✓"; color: var(--text-on-accent); }
+  .addon-body { flex: 1; min-width: 0; }
+  .addon-name { font: var(--font-label); color: var(--text-primary); font-size: 15px; margin-bottom: 2px; }
+  .addon-desc { font: var(--font-caption); color: var(--text-secondary); }
+  .addon-price { font: var(--font-serif-h4); color: var(--text-primary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .addon input { display: none; }
+
+  /* Accordion for breakdowns */
+  details.accordion { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); margin-bottom: 12px; overflow: hidden; }
+  details.accordion > summary { list-style: none; cursor: pointer; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font: var(--font-label); color: var(--text-primary); font-size: 15px; transition: background .15s; }
+  details.accordion > summary::-webkit-details-marker { display: none; }
+  details.accordion > summary:hover { background: var(--bg-default); }
+  details.accordion > summary .acc-hours { font: var(--font-body-sm); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+  details.accordion > summary .acc-arrow { transition: transform .2s; color: var(--text-muted); }
+  details.accordion[open] > summary .acc-arrow { transform: rotate(90deg); }
+  details.accordion[open] > summary { border-bottom: 1px solid var(--border-default); background: var(--bg-default); }
+  .acc-body { padding: 4px 24px 12px; }
+
+  /* Sticky total bar */
+  .total-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-surface); border-top: 1px solid var(--border-default); box-shadow: 0 -4px 24px rgba(0,0,0,0.08); z-index: 100; }
+  .total-bar-inner { max-width: 1100px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .total-group { display: flex; align-items: baseline; gap: 12px; }
+  .total-label { font: var(--font-caption); color: var(--text-muted); letter-spacing: var(--p-tracking-wide); text-transform: uppercase; }
+  .total-amount { font: var(--font-serif-h1); color: var(--text-primary); font-variant-numeric: tabular-nums; font-size: 30px; }
+  .total-sub { font: var(--font-body-sm); color: var(--text-secondary); }
+  .total-pill { padding: 6px 12px; background: var(--bg-accent); color: var(--text-accent); border-radius: var(--radius-full); font: var(--font-label); font-size: 13px; }
+
+  /* Scope list */
+  .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .scope-col { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 24px 28px; }
+  .scope-col h3 { font: var(--font-serif-h3); margin-bottom: 16px; font-size: 18px; }
+  .scope-col.include h3 { color: var(--text-accent); }
+  .scope-col.exclude h3 { color: #B0452D; }
+  .scope-col ul { list-style: none; }
+  .scope-col li { padding: 8px 0; border-bottom: 1px dashed var(--border-default); font: var(--font-body-sm); color: var(--text-primary); display: flex; justify-content: space-between; gap: 12px; }
+  .scope-col li:last-child { border-bottom: none; }
+  .scope-col li .hint { color: var(--text-muted); font-size: 12px; }
+
+  /* Counter arguments */
+  .counter-list { display: grid; gap: 16px; }
+  .counter-item { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 20px 24px; }
+  .counter-q { font: var(--font-label); color: var(--text-primary); margin-bottom: 6px; }
+  .counter-q::before { content: "Q. "; color: var(--text-accent); font-weight: var(--p-weight-bold); }
+  .counter-a { font: var(--font-body-sm); color: var(--text-secondary); }
+  .counter-a::before { content: "A. "; color: var(--text-accent); font-weight: var(--p-weight-bold); }
+
+  /* MTG memo */
+  .mtg-box { background: var(--bg-surface); border: 1px dashed var(--border-accent); border-radius: var(--radius-lg); padding: 24px 28px; }
+  .mtg-box h3 { font: var(--font-serif-h3); color: var(--text-accent); margin-bottom: 12px; font-size: 18px; }
+  .mtg-box ul { list-style: none; }
+  .mtg-box li { padding: 10px 0; font: var(--font-body-sm); color: var(--text-secondary); border-bottom: 1px dashed var(--border-default); }
+  .mtg-box li:last-child { border-bottom: none; }
+  .mtg-box li b { color: var(--text-primary); }
+
+  /* --- Roadmap (Gantt-style) --- */
+  .roadmap { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 32px 40px 28px; position: relative; overflow: hidden; }
+  .rm-scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; border-bottom: 1px solid var(--border-default); padding-bottom: 12px; margin-bottom: 24px; position: relative; }
+  .rm-scale::before { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--border-accent); }
+  .rm-scale > div { font: var(--font-label); color: var(--text-secondary); font-size: 13px; padding-left: 4px; border-left: 1px dashed var(--border-default); }
+  .rm-scale > div:first-child { border-left: none; }
+  .rm-scale > div span { display: block; font: var(--font-caption); color: var(--text-muted); margin-top: 2px; text-transform: none; letter-spacing: 0; font-weight: normal; }
+
+  .rm-track { position: relative; padding: 8px 0 20px; }
+  .rm-row { position: relative; height: 52px; margin-bottom: 8px; background: linear-gradient(90deg, transparent 19.8%, var(--border-default) 19.8%, var(--border-default) 20.2%, transparent 20.2%, transparent 39.8%, var(--border-default) 39.8%, var(--border-default) 40.2%, transparent 40.2%, transparent 59.8%, var(--border-default) 59.8%, var(--border-default) 60.2%, transparent 60.2%, transparent 79.8%, var(--border-default) 79.8%, var(--border-default) 80.2%, transparent 80.2%); }
+  .rm-bar { position: absolute; top: 6px; bottom: 6px; border-radius: 10px; display: flex; align-items: center; padding: 0 18px; gap: 12px; color: var(--text-on-accent); font: var(--font-label); font-size: 14px; box-shadow: var(--shadow-sm); transition: transform .15s; }
+  .rm-bar:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .rm-bar .rm-icon { font-size: 18px; flex-shrink: 0; }
+  .rm-bar .rm-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rm-bar.p1 { background: linear-gradient(90deg, var(--p-teal-800), var(--p-teal-600)); color: var(--text-on-dark); }
+  .rm-bar.p2 { background: linear-gradient(90deg, var(--p-teal-700), var(--p-teal-500)); color: var(--text-on-dark); }
+  .rm-bar.p3 { background: linear-gradient(90deg, var(--p-teal-700), var(--p-teal-500)); color: var(--text-on-dark); }
+  .rm-bar.p4 { background: linear-gradient(90deg, var(--p-teal-800), var(--p-teal-600)); color: var(--text-on-dark); }
+
+  .rm-milestones { position: relative; height: 62px; margin-top: 12px; border-top: 1px solid var(--border-default); padding-top: 20px; }
+  .rm-mile { position: absolute; top: 20px; transform: translateX(-50%); text-align: center; font: var(--font-caption); color: var(--text-secondary); font-size: 11px; line-height: 1.4; }
+  .rm-mile .rm-mile-icon { display: block; font-size: 20px; margin-bottom: 2px; }
+  .rm-mile.end { transform: translateX(-100%); text-align: right; }
+  .rm-mile.start { transform: translateX(0); text-align: left; }
+  .rm-mile::before { content: ""; position: absolute; top: -20px; left: 50%; width: 2px; height: 12px; background: var(--border-accent); transform: translateX(-50%); }
+  .rm-mile.end::before { left: 100%; }
+  .rm-mile.start::before { left: 0; }
+
+  .rm-note { margin-top: 24px; padding: 16px 20px; background: var(--bg-accent); border-left: 3px solid var(--border-accent); border-radius: var(--radius-sm); font: var(--font-body-sm); color: var(--text-primary); }
+  .rm-note b { color: var(--text-accent); }
+
+  @media (max-width: 820px) {
+    .roadmap { padding: 24px 20px; }
+    .rm-bar { padding: 0 10px; font-size: 12px; gap: 6px; }
+    .rm-bar .rm-icon { font-size: 14px; }
+    .rm-mile { font-size: 10px; }
+    .rm-mile .rm-mile-icon { font-size: 16px; }
+  }
+
+  /* Spacer for sticky bar */
+  .sticky-spacer { height: 100px; }
+
+  /* --- Print --- */
+  @media print {
+    body { background: white; }
+    .wrap { max-width: none; padding: 0 15mm; }
+    section, .step { break-inside: avoid; page-break-inside: avoid; }
+    .summary-card, .opt-card, .addon { break-inside: avoid; }
+    .total-bar { position: static; box-shadow: none; border-top: 2px solid var(--border-accent); margin-top: 32px; }
+    .sticky-spacer { display: none; }
+    /* Force all accordion details to open in print */
+    details.accordion > .acc-body { display: block !important; }
+    details.accordion .acc-arrow { display: none; }
+    details.accordion > summary { border-bottom: 1px solid var(--border-default); background: var(--bg-default); }
+  }
+
+  @media (max-width: 820px) {
+    .opt-grid.cols-2, .opt-grid.cols-3, .addon-list, .scope-grid { grid-template-columns: 1fr; }
+    .total-amount { font-size: 24px; }
+    .total-bar-inner { padding: 14px 20px; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ========== HEADER ========== -->
+<header class="doc-header">
+  <div class="doc-meta">Synto × amatowa ・ 見積書 ・ 2026-04-15</div>
+  <h1 class="doc-title">amatowa ブランドサイト＋EC 構築見積書</h1>
+</header>
+
+<!-- ========== STEP 1: BASE PACKAGE ========== -->
+<section class="step" id="step-base">
+  <div class="step-head">
+    <span class="step-num">1</span>
+    <h2 class="step-title">基本パッケージの内訳</h2>
+  </div>
+  <p class="step-lead">¥3,200,000（税抜）でご提供する6工程の内訳です。各セクションを開くと、含まれるタスクの詳細がご確認いただけます。</p>
+
+  <div id="base-breakdown"></div>
+</section>
+
+<!-- ========== STEP 2: ROADMAP ========== -->
+<section class="step" id="step-schedule">
+  <div class="step-head">
+    <span class="step-num">2</span>
+    <h2 class="step-title">公開までのロードマップ</h2>
+  </div>
+  <p class="step-lead">契約から公開まで約5ヶ月。4つのフェーズがゆるやかに重なりながら進行し、品質を担保した上で公開を迎えます。</p>
+
+  <div class="roadmap">
+    <div class="rm-scale">
+      <div>MONTH 1<span>要件定義</span></div>
+      <div>MONTH 2<span>デザイン</span></div>
+      <div>MONTH 3<span>デザイン確定・実装</span></div>
+      <div>MONTH 4<span>実装・商品登録</span></div>
+      <div>MONTH 5<span>テスト・公開</span></div>
+    </div>
+
+    <div class="rm-track">
+      <div class="rm-row">
+        <div class="rm-bar p1" style="left:0%; width:24%;">
+          <span class="rm-icon">🎯</span>
+          <span class="rm-text">要件定義・情報設計</span>
+        </div>
+      </div>
+      <div class="rm-row">
+        <div class="rm-bar p2" style="left:16%; width:40%;">
+          <span class="rm-icon">🎨</span>
+          <span class="rm-text">デザイン制作（18ページ）</span>
+        </div>
+      </div>
+      <div class="rm-row">
+        <div class="rm-bar p3" style="left:40%; width:44%;">
+          <span class="rm-icon">⚙️</span>
+          <span class="rm-text">実装・EC構築・LINE連携</span>
+        </div>
+      </div>
+      <div class="rm-row">
+        <div class="rm-bar p4" style="left:76%; width:24%;">
+          <span class="rm-icon">✅</span>
+          <span class="rm-text">テスト・公開</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rm-milestones">
+      <div class="rm-mile start" style="left:0%;">
+        <span class="rm-mile-icon">🚀</span>
+        キックオフ
+      </div>
+      <div class="rm-mile" style="left:45%;">
+        <span class="rm-mile-icon">✨</span>
+        デザイン確定<br>実装着手
+      </div>
+      <div class="rm-mile" style="left:80%;">
+        <span class="rm-mile-icon">📦</span>
+        実装完了<br>テスト開始
+      </div>
+      <div class="rm-mile end" style="left:100%;">
+        <span class="rm-mile-icon">🎉</span>
+        公開
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ========== STEP 3: SCOPE ========== -->
+<section class="step" id="step-scope">
+  <div class="step-head">
+    <span class="step-num">3</span>
+    <h2 class="step-title">含むもの／含まないもの</h2>
+  </div>
+
+  <div class="scope-grid">
+    <div class="scope-col include">
+      <h3>✓ 含まれます</h3>
+      <ul>
+        <li>18ページのブランドサイト制作（デザイン＋実装＋レスポンシブ）</li>
+        <li>選択したECプラットフォームのカスタマイズ</li>
+        <li>商品一覧・商品詳細・カート・決済・会員ページ</li>
+        <li>基本的なSNS連携（Instagram・X・YouTubeへのリンク）</li>
+        <li>ドメイン・SSL設定作業<span class="hint">※取得費用は別</span></li>
+        <li>CMS（ブログ機能）の初期設定</li>
+        <li>操作マニュアル・初期レクチャー（60分×2回）</li>
+        <li>公開後1ヶ月間のバグ修正対応</li>
+      </ul>
+    </div>
+    <div class="scope-col exclude">
+      <h3>✕ 含まれません（別途）</h3>
+      <ul>
+        <li>Shopify月額利用料 <span class="hint">3,650円/月〜</span></li>
+        <li>ドメイン取得・更新料</li>
+        <li>商品の仕入・製造費用</li>
+        <li>決済手数料 <span class="hint">売上の約3.25%〜</span></li>
+        <li>有料テーマ・有料アプリの実費</li>
+        <li>SEO初期設定・アクセス解析導入・パフォーマンス最適化 <span class="hint">オプション対応可</span></li>
+        <li>顧客レビュー機能 <span class="hint">オプション対応可</span></li>
+        <li>Journal/Blog記事の企画・執筆・掲載 <span class="hint">オプション対応可</span></li>
+        <li>メール自動化（ウェルカム・カゴ落ち・リピート促進） <span class="hint">オプション対応可</span></li>
+        <li>ギフトラッピング・熨斗・メッセージカード機能 <span class="hint">オプション対応可</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="sticky-spacer"></div>
+
+</div><!-- /wrap -->
+
+<!-- ========== STICKY TOTAL BAR ========== -->
+<div class="total-bar">
+  <div class="total-bar-inner">
+    <div class="total-group">
+      <span class="total-pill">Shopify</span>
+      <span class="total-label">初期費用</span>
+      <span class="total-amount" id="total-amount">¥3,200,000</span>
+      <span class="total-sub">（税抜）</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const state = {
+  platform: 'shopify',
+  platformBase: 3200000,
+  addons: 0,
+};
+
+const PLATFORM_DATA = {
+  shopify: {
+    name: 'Shopify',
+    base: 3200000,
+    hours: 508,
+    breakdown: [
+      { key: 'pm',   title: 'PM・ディレクション', hours: 60, rate: 5000, tasks: [
+        ['事業理解とゴール設定のヒアリング（要件定義書・サイトマップまで納品）'],
+        ['5ヶ月の週次進捗管理 — 毎週のレビューで遅延・品質リスクを早期検知'],
+        ['隔週の定例ミーティング＋議事録で岸本さんと方向性を都度すり合わせ'],
+        ['スタッフィング・品質管理（窓口は常に1つに集約）'],
+        ['持続化補助金の申請書類作成サポート（採択フォローまで）'],
+        ['リスク管理と公開後の運用体制引き継ぎ'],
+      ]},
+      { key: 'ia',   title: '情報設計・UX', hours: 16, rate: 5000, tasks: [
+        ['全18ページの構造設計 — どこに何を置くか、どう遷移するか'],
+        ['各ページで何を語るべきかのコンテンツ戦略マップ'],
+        ['「理解 → 共感 → 信頼 → 購入」の心理導線を設計'],
+      ]},
+      { key: 'design', title: 'デザイン', hours: 200, rate: 5000, tasks: [
+        ['amatowaの世界観を視覚化するムードボード＋デザインシステム構築（色・書体・余白のルール化）'],
+        ['第一印象を決める「顔」となるトップページの作り込み（PC・SP両対応＋修正2ラウンド）'],
+        ['amatowaの物語を語る13ページ（会社・亜麻・ものづくり）のオリジナルデザイン'],
+        ['お問合せ・FAQ・会員登録など運用に必要な5ページのデザイン'],
+        ['洗練された体験の商品ページ設計（一覧・詳細・カート・会員・ガイド）'],
+        ['購入確認メール・エラーページ・アイコンなどの作り込み'],
+        ['統一感の最終調整'],
+      ]},
+      { key: 'ec',   title: 'Shopify構築', hours: 180, rate: 8000, tasks: [
+        ['Shopifyストアの土台を構築し、デザインを忠実に再現（Liquid実装）'],
+        ['デザインした全18ページを実際に動くWebページに仕立て上げる'],
+        ['商品販売に必要な機能一式のセットアップ（商品登録支援・決済・会員・自動メール）'],
+        ['LINE公式アカウントとの完全連携（友だち導線・配信設定・会員ID連携）'],
+        ['配送料・消費税・特商法・プライバシーポリシーなど日本の商取引に必要な設定一式'],
+        ['お客様の情報を守るセキュリティ設定と誰もが使えるアクセシビリティ対応'],
+        ['PC・タブレット・スマホ全対応の最終調整と全機能の通しテスト'],
+      ]},
+      { key: 'test', title: 'テスト・公開', hours: 40, rate: 8000, tasks: [
+        ['主要ブラウザ・全デバイス・決済フロー全パターンの動作確認'],
+        ['表示速度・SEO・アクセシビリティの品質チェック（Lighthouse評価）'],
+        ['iPhone・Androidなど実機3-4機種での最終確認'],
+        ['ドメイン・SSL設定と本番公開（安全バッファ込み）'],
+      ]},
+      { key: 'manual', title: 'マニュアル・レクチャー', hours: 12, rate: 5000, tasks: [
+        ['作成したEC環境の操作方法の説明と引き継ぎ'],
+      ]},
+    ],
+  },
+};
+
+const fmt = n => '¥' + n.toLocaleString('ja-JP');
+
+function renderBreakdown() {
+  const data = PLATFORM_DATA[state.platform];
+  const container = document.getElementById('base-breakdown');
+  container.innerHTML = data.breakdown.map(group => {
+    const amount = group.hours * group.rate;
+    const rows = group.tasks.map(([name]) => `
+      <tr>
+        <td class="task">${name}</td>
+      </tr>`).join('');
+    return `
+      <details class="accordion">
+        <summary>
+          <span>${group.title}</span>
+          <span style="display:flex;align-items:center;gap:16px;">
+            <span class="acc-hours">${group.hours}h ／ ${fmt(amount)}</span>
+            <span class="acc-arrow">▸</span>
+          </span>
+        </summary>
+        <div class="acc-body">
+          <div class="tbl-wrap" style="margin:0;">
+            <table>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </div>
+      </details>`;
+  }).join('');
+}
+
+function updateTotal() {
+  const total = state.platformBase + state.addons;
+  document.getElementById('total-amount').textContent = fmt(total);
+}
+
+// Initial render
+renderBreakdown();
+updateTotal();
+</script>
+</body>
+</html>
